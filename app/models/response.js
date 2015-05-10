@@ -2,18 +2,12 @@
 
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
+var RoundResponse = require('../models/roundResponse.js');
+
 
 var ResponseSchema = new Schema({
-
   userId: String,
-  responses: [{
-    roundNumber:  Number,
-    questionType: Number,
-    questionTime: Number,
-    decision:     Boolean,
-    decisionTime: Number
-  }],
-
+  responses: [RoundResponse]
 });
 
 ResponseSchema.virtual('date')
