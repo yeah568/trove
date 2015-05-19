@@ -13,7 +13,7 @@ module.exports = function (app) {
 
 router.get('/', function (req, res, next) {
   res.render('start', {
-    title: 'Please log in.' // TODO: Change to whatever needed
+    title: 'Please log in.'
   });
 });
 
@@ -24,7 +24,7 @@ router.post('/', function (req, res, next) {
     // if user has not been created
     if (!response) {
       res.render('start', {
-        title: 'TODO: title',
+        title: 'Please log in.',
         error: 'User ID not found. Please try again.'
       });
     } else {

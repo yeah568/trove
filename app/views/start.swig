@@ -4,7 +4,7 @@
 <div class="ui column stackable page grid">
   <div class="four wide column"></div>
   <div class="eight wide centered column">
-    <h1 class="ui header">Lorem ipsum</h1>
+    <h1 class="ui header">Please enter your ID to begin.</h1>
     {% if error %}
     <div class="ui negative message">
       <div class="header">
