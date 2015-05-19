@@ -26,8 +26,8 @@ var config = {
     app: {
       name: 'trove'
     },
-    port: 3000,
-    db: 'mongodb://localhost/projects-production'
+    port: 80,
+    db: 'mongodb://dev:asdf123456@dogen.mongohq.com:10096/trove'
   }
 };
 
