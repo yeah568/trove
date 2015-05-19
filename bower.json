@@ -6,7 +6,5 @@
     "node_modules",
     "components"
   ],
-  "dependencies": {
-    "semantic-ui": "~1.12.2"
-  }
+  "dependencies": {}
 }
