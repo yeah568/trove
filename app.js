@@ -19,5 +19,6 @@ var app = express();
 
 require('./config/express')(app, config);
 
-app.listen(config.port);
+var port = process.env.PORT || config.port;
+app.listen(port);
 
