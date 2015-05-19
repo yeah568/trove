@@ -46,7 +46,7 @@
   <div class="four wide column"></div>
 </div>
 
-<form id="round-form" name="answers" method="post" action="./round">
+<form class="round-form" name="answers" method="post" action="./round">
   <input type="text" name="userId" value="{{ question.userId }}" />
   <input type="number" name="roundNumber" value="{{ question.roundNumber }}" />
   <input type="text" name="questionTypePicked" />
