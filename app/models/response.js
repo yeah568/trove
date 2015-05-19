@@ -1,13 +1,12 @@
-// Example model
-
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
-var RoundResponse = require('../models/roundResponse.js');
+var RoundResponseSchema = require('../models/roundResponse.js');
 
 
 var ResponseSchema = new Schema({
   userId: String,
-  responses: [RoundResponse]
+  complete: Boolean,
+  responses: [RoundResponseSchema]
 });
 
 ResponseSchema.virtual('date')

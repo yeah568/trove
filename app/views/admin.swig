@@ -1,111 +1,184 @@
 {% extends 'layout.swig' %}
 
 {% block content %}
-
-<div class="ui center aligned grid">
+<h1 class="ui teal dividing header">Admin</h1>
+{% if message %}
+<div class="ui positive message">
+  <div class="header">
+    {{ message }}
+  </div>
+</div>
+{% endif %}
+{% if error %}
+<div class="ui negative message">
+  <div class="header">
+    {{ error }}
+  </div>
+</div>
+{% endif %}
+<div class="ui aligned grid segment">
+  <h2 class="ui teal dividing header">Participants</h2>
   <div class="row">
-    <h1 class="ui center algined header">
-      {{ question.itemName }}
-    </h1>
+    <div class="ui column accordion">
+      <div class="title">
+        <i class="dropdown icon"></i>
+         Add a new user
+      </div>
+      <div class="content">
+        <form class="ui form column" method="post" action="/admin">
+          <input type="hidden" name="submit" value="response" />
+          <div class="field">
+            <div class="ui action input">
+              <input type="text" name="userId" id="userId" placeholder="Add participant user ID">
+              <button class="ui button" id="generateId" type="button">Generate a User ID</button>
+            </div>
+            <button class="ui button" type="submit">Add</button>
+          </div>
+        </form>
+        <div class="ui divider"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ui row">
+    <table class="ui column celled striped collapsing table">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Status</th>
+          <th>Rounds Completed</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in responses %}
+        <tr>
+          <td>{{ user.userId }}</td>
+          {% if user.responses.length >= rounds.length %}
+          <td class="positive">Complete</td>
+          {% else %}
+          <td class="warning">In Progress</td>
+          {% endif %}
+          <td>{{ user.responses.length }}</td>
+          <td><i class="ui red trash icon" data-type="user" data-id="{{ user.userId }}"></i></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   <div class="row">
-    <div class="six wide column">
-      <div class="ui styled fluid accordion question" id="q1">
-        <div class="ui header title" data-question="1" data-question-type="{{ question.questions[0].type }}">
-          {{ question.questions[0].text }}
-        </div>
-        <div class="content">
-          <p>{{ question.questions[0].answer }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="four wide column">
-      <img class="ui large image" src="/img/central.jpg">
-    </div>
-    <div class="six wide column">
-      <div class="ui styled fluid accordion question" id="q2">
-        <div class="ui header title" data-question="2" data-question-type="{{ question.questions[1].type }}">
-          {{ question.questions[1].text }}
-        </div>
-        <div class="content">
-          <p>{{ question.questions[1].answer }}</p>
-        </div>
-      </div>
+    <div class="ui column">
+      <span>Download all responses as: <a href="/admin/download">CSV</a></span>
     </div>
   </div>
 </div>
-<div class="ui stackable center aligned grid segment">
-  <div class="four wide column"></div>
-  <div class="four wide column">
-    <div class="ui huge green button" data-choice="keep">Keep</div>
+<div class="ui aligned grid segment">
+  <h2 class="ui teal dividing header">Rounds</h2>
+  <div class="row">
+    <div class="ui column accordion">
+      <div class="title">
+        <i class="dropdown icon"></i>
+         Add a new round
+      </div>
+      <div class="content">
+        <form class="ui form column" method="post" action="/admin" enctype="multipart/form-data">
+          <input type="hidden" name="submit" value="round" />
+          <div class="two fields">
+            <div class="field">
+              <input type="number" name="roundNumber" value="{{ rounds.length + 1 }}" required />
+            </div>
+            <div class="field">
+              <input type="text" name="itemName" placeholder="Item Name" required />
+            </div>
+          </div>
+          <div class="field">
+            <input type="text" name="q1type" placeholder="Question 1 Type" required />
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <textarea name="q1text" placeholder="Question 1 Text" required></textarea>
+            </div>
+            <div class="field">
+              <textarea name="q1answer" placeholder="Question 1 Answer" required></textarea>
+            </div>
+          </div>
+          <div class="field">
+            <input type="text" name="q2type" placeholder="Question 2 Type" required />
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <textarea name="q2text" placeholder="Question 2 Text" required></textarea>
+            </div>
+            <div class="field">
+              <textarea name="q2answer" placeholder="Question 2 Answer" required></textarea>
+            </div>
+          </div>
+          <div class="field">
+            <input type="file" name="image" required />
+          </div>
+          <button class="ui button">Add</button>
+        </form>
+        <div class="ui divider"></div>
+      </div>
+    </div>
   </div>
-  <div class="ui vertical divider">or</div>
-  <div class="four wide column">
-    <div class="ui huge red button" data-choice="discard">Discard</div>
+  <div class="ui row">
+    <table class="ui column celled striped collapsing table">
+      <thead>
+        <tr>
+          <th>Round Number</th>
+          <th>Item</th>
+          <th>Question 1 Text</th>
+          <th>Question 1 Type</th>
+          <th>Question 1 Answer</th>
+          <th>Question 2 Text</th>
+          <th>Question 2 Type</th>
+          <th>Question 2 Answer</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for round in rounds %}
+        <tr>
+          <td>{{ round.roundNumber }}</td>
+          <td>{{ round.itemName }}</td>
+          {% for question in round.questions %}
+          <td>{{ question.text }}</td>
+          <td>{{ question.type }}</td>
+          <td>{{ question.answer }}</td>
+          {% endfor %}
+          <td><i class="ui red trash icon" data-type="round" data-id="{{ round.roundNumber }}"></i></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <div class="four wide column"></div>
 </div>
-
-<form name="answers" method="post" action="./round">
-  <input type="text" name="userId" value="{{ question.userId }}" />
-  <input type="number" name="roundNumber" value="{{ question.roundNumber }}" />
-  <input type="text" name="questionTypePicked" />
-  <input type="number" name="questionTime" />
-  <input type="text" name="decision" />
-  <input type="number" name="decisionTime" />
-
-  <input type="submit" id="submit-form" />
-</form>
 
 
 <script>
-var start,
-  choiceQuestion = 0,
-  decision,
-  questionTime = 0,
-  decisionTime = 0,
-  quetionType = 'none';
-var f = document.forms[0];
+$('.ui.accordion').accordion();
 
-$(document).ready(function() {
-  start = new Date();
-});
+$('#generateId').click(makeid);
+function makeid() {
+    var id = [];
+    var chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 
-function reveal(e) {
-  choiceQuestion = e.target.dataset.question;
-  questionTime = e.timeStamp - start;
-  $(e.target).accordion('open');
-  $('.question').off('click');
-
-  var other;
-  choiceQuestion == '1' ? other = $('#q2') : other = $('#q1');
-  other.children('.header.title').addClass('disabled');
-
-  questionTypePicked = e.target.dataset.questionTypePicked;
-
-  console.log(e);
-  console.log(choiceQuestion);
-  console.log(questionTime);
-};
-
-$('.question').click(reveal);
-
-function submit(e) {
-  decision = e.target.dataset.choice;
-  decisionTime = e.timeStamp - start;
-
-  f.choiceQuestion.value = choiceQuestion;
-  f.questionTime.value = questionTime;
-  f.questionTypePicked.value = questionTypePicked;
-
-  f.decision.value = decision;
-  f.decisionTime.value = decisionTime;
-  $('.question').off('click').children('.header.title').addClass('disabled');
-  $('.button').off('click').addClass('disabled');
-  f.submit();
+    for(var i = 0; i < 7; i++) {
+      id[i] = chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    $('#userId').val(id.join(""));
 }
 
-$('.button').click(submit);
+$('.trash').click(function(e) {
+  $.post('/admin/delete', {
+    deleteType: e.target.dataset.type,
+    id: e.target.dataset.id
+  }, function(res) {
+    alert(res);
+    var node = e.target.parentNode.parentNode;
+    node.parentNode.removeChild(node);
+  })
+});
 </script>
 
 {% endblock %}

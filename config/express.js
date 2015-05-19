@@ -8,6 +8,9 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var swig = require('swig');
+var multer = require('multer');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 module.exports = function(app, config) {
   app.engine('swig', swig.renderFile);
@@ -28,6 +31,7 @@ module.exports = function(app, config) {
   app.use(compress());
   app.use(express.static(config.root + '/public'));
   app.use(methodOverride());
+  app.use(multer({dest:'./public/img/rounds/'}));
 
   var controllers = glob.sync(config.root + '/app/controllers/*.js');
   controllers.forEach(function (controller) {

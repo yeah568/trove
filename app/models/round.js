@@ -7,6 +7,7 @@ var QuestionSchema = new Schema({ text: String, type: String, answer: String});
 var RoundSchema = new Schema({
   roundNumber: Number,
   itemName: String,
+  image: String,
   questions: [QuestionSchema]
 });
 

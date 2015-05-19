@@ -3,7 +3,7 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-var RoundResponseSchema = module.exports = new Schema({
+var RoundResponseSchema = new Schema({
     roundNumber:  Number,
     questionTypePicked: String,
     questionTime: Number,
@@ -11,4 +11,4 @@ var RoundResponseSchema = module.exports = new Schema({
     decisionTime: Number
 });
 
-module.exports = mongoose.model('RoundResponse', RoundResponseSchema);
+module.exports = RoundResponseSchema;

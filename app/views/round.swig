@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 
 {% block content %}
-
+<img src="/img/rounds/{{ question.image }}" />
 <div class="ui center aligned grid">
   <div class="row">
     <h1 class="ui center algined header">
@@ -11,7 +11,7 @@
   <div class="row">
     <div class="six wide column">
       <div class="ui styled fluid accordion question" id="q1">
-        <div class="ui header title" data-question="1" data-question-type="{{ question.questions[0].type }}">
+        <div class="ui header title" data-question="1" data-questiontype="{{ question.questions[0].type }}">
           {{ question.questions[0].text }}
         </div>
         <div class="content">
@@ -24,7 +24,7 @@
     </div>
     <div class="six wide column">
       <div class="ui styled fluid accordion question" id="q2">
-        <div class="ui header title" data-question="2" data-question-type="{{ question.questions[1].type }}">
+        <div class="ui header title" data-question="2" data-questiontype="{{ question.questions[1].type }}">
           {{ question.questions[1].text }}
         </div>
         <div class="content">
@@ -64,7 +64,7 @@ var start,
   decision,
   questionTime = 0,
   decisionTime = 0,
-  quetionType = 'none';
+  questionTypePicked = 'neither';
 var f = document.forms[0];
 
 $(document).ready(function() {
@@ -72,7 +72,7 @@ $(document).ready(function() {
 });
 
 function reveal(e) {
-  choiceQuestion = e.target.dataset.question;
+  questionTypePicked = e.target.dataset.questiontype;
   questionTime = e.timeStamp - start;
   $(e.target).accordion('open');
   $('.question').off('click');
@@ -80,12 +80,6 @@ function reveal(e) {
   var other;
   choiceQuestion == '1' ? other = $('#q2') : other = $('#q1');
   other.children('.header.title').addClass('disabled');
-
-  questionTypePicked = e.target.dataset.questionTypePicked;
-
-  console.log(e);
-  console.log(choiceQuestion);
-  console.log(questionTime);
 };
 
 $('.question').click(reveal);
@@ -94,7 +88,6 @@ function submit(e) {
   decision = e.target.dataset.choice;
   decisionTime = e.timeStamp - start;
 
-  f.choiceQuestion.value = choiceQuestion;
   f.questionTime.value = questionTime;
   f.questionTypePicked.value = questionTypePicked;
 

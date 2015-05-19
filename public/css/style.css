@@ -1,0 +1,7 @@
+body {
+  padding: 20px !important;
+}
+.trash {
+  cursor: pointer; 
+  cursor: hand; 
+}
