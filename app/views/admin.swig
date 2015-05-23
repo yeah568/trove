@@ -53,7 +53,7 @@
         {% for user in responses %}
         <tr>
           <td>{{ user.userId }}</td>
-          {% if user.responses.length >= rounds.length %}
+          {% if user.complete %}
           <td class="positive">Complete</td>
           {% else %}
           <td class="warning">In Progress</td>

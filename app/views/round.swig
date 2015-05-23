@@ -1,38 +1,44 @@
 {% extends 'layout.swig' %}
 
 {% block content %}
-<img src="/img/rounds/{{ question.image }}" />
-<div class="ui center aligned grid">
-  <div class="row">
-    <h1 class="ui center algined header">
-      {{ question.itemName }}
-    </h1>
+<div class="ui center aligned vertically divided grid">
+  <div class="four wide column">
+    <div class="row">
+      <h1 class="ui center algined header">
+        {{ question.itemName }}
+      </h1>
+      <img src="/img/rounds/{{ question.image }}" />
+    </div>
   </div>
-  <div class="row">
-    <div class="six wide column">
-      <div class="ui styled fluid accordion question" id="q1">
-        <div class="ui header title" data-question="1" data-questiontype="{{ question.questions[0].type }}">
-          {{ question.questions[0].text }}
+  <div class="twelve wide column">
+    <div class="ui center aligned grid">
+      <div class="six wide column">
+        <div class="ui styled fluid accordion question" id="q1">
+          <div class="ui header title" data-question="1" data-questiontype="{{ question.questions[0].type }}">
+            {{ question.questions[0].text }}
+          </div>
+          <div class="content">
+            <p>{{ question.questions[0].answer }}</p>
+          </div>
         </div>
-        <div class="content">
-          <p>{{ question.questions[0].answer }}</p>
+      </div>
+      <div class="four wide column">
+        <img class="ui large image" src="/img/central.jpg">
+      </div>
+      <div class="six wide column">
+        <div class="ui styled fluid accordion question" id="q2">
+          <div class="ui header title" data-question="2" data-questiontype="{{ question.questions[1].type }}">
+            {{ question.questions[1].text }}
+          </div>
+          <div class="content">
+            <p>{{ question.questions[1].answer }}</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="four wide column">
-      <img class="ui large image" src="/img/central.jpg">
-    </div>
-    <div class="six wide column">
-      <div class="ui styled fluid accordion question" id="q2">
-        <div class="ui header title" data-question="2" data-questiontype="{{ question.questions[1].type }}">
-          {{ question.questions[1].text }}
-        </div>
-        <div class="content">
-          <p>{{ question.questions[1].answer }}</p>
-        </div>
-      </div>
-    </div>
   </div>
+
+
 </div>
 <div class="ui stackable center aligned grid segment">
   <div class="four wide column"></div>
@@ -46,6 +52,15 @@
   <div class="four wide column"></div>
 </div>
 
+
+
+
+
+
+
+
+
+
 <form class="round-form" name="answers" method="post" action="./round">
   <input type="text" name="userId" value="{{ question.userId }}" />
   <input type="number" name="roundNumber" value="{{ question.roundNumber }}" />
@@ -56,7 +71,6 @@
 
   <input type="submit" id="submit-form" />
 </form>
-
 
 <script>
 var start,
