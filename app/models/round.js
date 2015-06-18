@@ -3,7 +3,7 @@
 var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-var QuestionSchema = new Schema({ text: String, type: String, answer: String});
+var QuestionSchema = new Schema({ text: String, type: String, qType: String, answer: String});
 var RoundSchema = new Schema({
   roundNumber: Number,
   itemName: String,

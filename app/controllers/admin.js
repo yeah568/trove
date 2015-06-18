@@ -3,21 +3,29 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Round = mongoose.model('Round'),
   Response = mongoose.model('Response'),
-  json2csv = require('json2csv');
+  json2csv = require('json2csv'),
+  fs = require('fs'),
+  auth = require('http-auth'),
+  pass = require('pass'),
+  cdm = require('connect-dynamic-middleware');
 
 module.exports = function (app) {
   app.use('/admin', router);
 };
 
-router.get('/', function (req, res, next) {
+var basic = auth.basic({
+    realm: 'Admin',
+    file: __base + 'config/admin.htpasswd'
+});
+var authMiddleware = cdm(auth.connect(basic));
+
+router.get('/', authMiddleware, function (req, res, next) {
   next();
 }, renderAdmin);
 
-router.post('/', function (req, res, next) {
+router.post('/', authMiddleware, function (req, res, next) {
   res.locals.renderOptions = {};
   if (req.body.submit == 'round') {
-    console.log(req.files);
-    console.log(req.files.image.name);
     var round = new Round({
       roundNumber: req.body.roundNumber,
       itemName: req.body.itemName,
@@ -25,10 +33,12 @@ router.post('/', function (req, res, next) {
       questions: [{
         text: req.body.q1text,
         type: req.body.q1type,
+        qType: req.body.q1qtype,
         answer: req.body.q1answer
       }, {
         text: req.body.q2text,
         type: req.body.q2type,
+        qType: req.body.q2qtype,
         answer: req.body.q2answer
       }]
     });
@@ -38,31 +48,50 @@ router.post('/', function (req, res, next) {
   } else if (req.body.submit == 'response') {
     Response.find({ userId: req.body.userId }).limit(1).exec()
     .then(function(response) {
-      console.log('response hit');
       if (response.length == 0) {
-        console.log('response not exists hit');
         var r = new Response({
           userId: req.body.userId,
           complete: false,
           responses: []
         });
         r.save(function() {
-          console.log('response save hit');
           next();
         });
       } else {
-        console.log('response exists hit');
         res.locals.renderOptions['error'] = "User " + req.body.userId + " already exists.";
         next();
-        console.log('after next');
       }
+    });
+  } else if (req.body.submit == 'text') {
+      fs.writeFile(__base + 'config/settings.json',
+      JSON.stringify({ endText: req.body.endtext, consentText: req.body.consenttext }),
+      function (err) {
+        next();
+      });
+  } else if (req.body.submit == 'account') {
+    pass.generate(req.body.password, function (err, hash) {
+      if (err) {
+        return console.log('Error: ' + err);
+      }
+      console.log(hash);
+      var htpasswd = req.body.username + ':' + hash;
+      fs.writeFile(__base + 'config/admin.htpasswd',
+        htpasswd,
+        function (err) {
+          basic = auth.basic({
+            realm: 'Admin',
+            file: __base + 'config/admin.htpasswd'
+          })
+          authMiddleware.setMiddleware(auth.connect(basic));
+          next();
+        });
     });
   } else {
     next();
   }
 }, renderAdmin);
 
-router.get('/download', function (req, res, next) {
+router.get('/download', authMiddleware, function (req, res, next) {
   var parsed = [];
   Response.find({}).exec()
   .then(function (responses) {
@@ -70,32 +99,37 @@ router.get('/download', function (req, res, next) {
       // create data objects
       var r = {
         userId: response.userId,
-        complete: response.complete
+        complete: response.complete,
+        preAnxiety: response.preAnxiety,
+        postAnxiety: response.postAnxiety
       };
       response.responses.forEach(function (rr, i) {
         r['rr' + rr.roundNumber + 'qtp'] = rr.questionTypePicked;
+        r['rr' + rr.roundNumber + 'qType'] = rr.qTypePicked;
         r['rr' + rr.roundNumber + 'qt'] = rr.questionTime;
         r['rr' + rr.roundNumber + 'd'] = rr.decision;
         r['rr' + rr.roundNumber + 'dt'] = rr.decisionTime;
       })
-      parsed.push(r);  
+      parsed.push(r);
     });
 
     // create fields for csv
-    var fields = ['userId']
-    var fieldNames = ['User ID'];
+    var fields = ['userId', 'preAnxiety', 'postAnxiety'];
+    var fieldNames = ['User ID', 'Pre Anxiety', 'Post Anxiety'];
     responses[0].responses.forEach(function (rr, i) {
       fields.push('rr' + rr.roundNumber + 'qtp');
+      fields.push('rr' + rr.roundNumber + 'qType');
       fields.push('rr' + rr.roundNumber + 'qt');
       fields.push('rr' + rr.roundNumber + 'd');
       fields.push('rr' + rr.roundNumber + 'dt');
-      fieldNames.push('Round ' + rr.roundNumber + " Question Type Picked");
+      fieldNames.push('Round ' + rr.roundNumber + " I-Type Picked");
+      fieldNames.push('Round ' + rr.roundNumber + " Q-Type Picked");
       fieldNames.push('Round ' + rr.roundNumber + " Time to Quesiton Pick");
       fieldNames.push('Round ' + rr.roundNumber + " Decision");
       fieldNames.push('Round ' + rr.roundNumber + " Time to Decision");
     });
     json2csv({ data: parsed, fields: fields, fieldNames: fieldNames }, function(err, csv) {
-      if (err) console.log(err); 
+      if (err) console.log(err);
       var timestamp = "";
       timestamp = (new Date()).toISOString().slice(0,16).replace("T", "-");
       res.set({
@@ -107,7 +141,7 @@ router.get('/download', function (req, res, next) {
   })
 });
 
-router.post('/delete', function (req, res, next) {
+router.post('/delete', authMiddleware, function (req, res, next) {
   if (req.body.deleteType == 'round') {
     Round.find({ roundNumber: req.body.id }).remove().exec()
     .then(function() {
@@ -121,15 +155,7 @@ router.post('/delete', function (req, res, next) {
   }
 })
 
-router.get('/login', function (req, res, next) {
-    res.render('adminLogin', {
-      title: 'admin login'
-    })
-
-});
-
 function renderAdmin(req, res) {
-  console.log('render hit');
   var options = {
     title: 'Admin'
   }
@@ -146,6 +172,22 @@ function renderAdmin(req, res) {
     return Round.find({}).sort({roundNumber:1}).exec()
   }).then(function (rounds) {
     options.rounds = rounds;
-    res.render('admin', options);
+    fs.readFile(__base + 'config/settings.json', function (err, config) {
+      try {
+        var parsed = JSON.parse(config);
+        options.endText = parsed.endText;
+        options.consentText = parsed.consentText;
+        fs.readFile(__base + 'config/admin.htpasswd', "utf-8", function (err, credentials) {
+          if (err) {
+            return console.log(err);
+          };
+          options.username = credentials.split(':')[0];
+          res.render('admin', options);
+        });
+      }
+      catch (err) {
+        return console.log(err);
+      }
+    });
   });
 }

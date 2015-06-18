@@ -5,7 +5,10 @@ var RoundResponseSchema = require('../models/roundResponse.js');
 
 var ResponseSchema = new Schema({
   userId: String,
+  consent: Boolean,
   complete: Boolean,
+  preAnxiety: { type: Number, default: -1},
+  postAnxiety: { type: Number, default: -1},
   responses: [RoundResponseSchema]
 });
 

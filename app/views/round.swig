@@ -14,7 +14,7 @@
     <div class="ui center aligned grid">
       <div class="six wide column">
         <div class="ui styled fluid accordion question" id="q1">
-          <div class="ui header title" data-question="1" data-questiontype="{{ question.questions[0].type }}">
+          <div class="ui header title" data-question="1" data-questiontype="{{ question.questions[0].type }}" data-qtype="{{ question.questions[0].qType }}">
             {{ question.questions[0].text }}
           </div>
           <div class="content">
@@ -27,7 +27,7 @@
       </div>
       <div class="six wide column">
         <div class="ui styled fluid accordion question" id="q2">
-          <div class="ui header title" data-question="2" data-questiontype="{{ question.questions[1].type }}">
+          <div class="ui header title" data-question="2" data-questiontype="{{ question.questions[1].type }}" data-qtype="{{ question.questions[1].qType }}">
             {{ question.questions[1].text }}
           </div>
           <div class="content">
@@ -54,17 +54,11 @@
 
 
 
-
-
-
-
-
-
-
 <form class="round-form" name="answers" method="post" action="./round">
   <input type="text" name="userId" value="{{ question.userId }}" />
   <input type="number" name="roundNumber" value="{{ question.roundNumber }}" />
   <input type="text" name="questionTypePicked" />
+  <input type="text" name="qTypePicked" />
   <input type="number" name="questionTime" />
   <input type="text" name="decision" />
   <input type="number" name="decisionTime" />
@@ -78,7 +72,8 @@ var start,
   decision,
   questionTime = 0,
   decisionTime = 0,
-  questionTypePicked = 'neither';
+  questionTypePicked = 'neither',
+  qTypePicked = 'neither';
 var f = document.forms[0];
 
 $(document).ready(function() {
@@ -87,6 +82,7 @@ $(document).ready(function() {
 
 function reveal(e) {
   questionTypePicked = e.target.dataset.questiontype;
+  qTypePicked = e.target.dataset.qtype;
   questionTime = e.timeStamp - start;
   $(e.target).accordion('open');
   $('.question').off('click');
@@ -104,6 +100,7 @@ function submit(e) {
 
   f.questionTime.value = questionTime;
   f.questionTypePicked.value = questionTypePicked;
+  f.qTypePicked.value = qTypePicked;
 
   f.decision.value = decision;
   f.decisionTime.value = decisionTime;

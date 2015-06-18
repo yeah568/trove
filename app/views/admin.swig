@@ -90,8 +90,13 @@
               <input type="text" name="itemName" placeholder="Item Name" required />
             </div>
           </div>
-          <div class="field">
-            <input type="text" name="q1type" placeholder="Question 1 Type" required />
+          <div class="two fields">
+            <div class="field">
+              <input type="text" name="q1type" placeholder="Question 1 I-Type" required />
+            </div>
+            <div class="field">
+              <input type="text" name="q1qtype" placeholder="Question 1 Q-Type" requierd />
+            </div>
           </div>
           <div class="two fields">
             <div class="field">
@@ -101,8 +106,13 @@
               <textarea name="q1answer" placeholder="Question 1 Answer" required></textarea>
             </div>
           </div>
-          <div class="field">
-            <input type="text" name="q2type" placeholder="Question 2 Type" required />
+          <div class="two fields">
+            <div class="field">
+              <input type="text" name="q2type" placeholder="Question 2 I-Type" required />
+            </div>
+            <div class="field">
+              <input type="text" name="q2qtype" placeholder="Question 2 Q-Type" required />
+            </div>
           </div>
           <div class="two fields">
             <div class="field">
@@ -128,10 +138,12 @@
           <th>Round Number</th>
           <th>Item</th>
           <th>Question 1 Text</th>
-          <th>Question 1 Type</th>
+          <th>Question 1 I-Type</th>
+          <th>Question 1 Q-Type</th>
           <th>Question 1 Answer</th>
           <th>Question 2 Text</th>
-          <th>Question 2 Type</th>
+          <th>Question 2 I-Type</th>
+          <th>Question 2 Q-Type</th>
           <th>Question 2 Answer</th>
           <th>Delete</th>
         </tr>
@@ -144,6 +156,7 @@
           {% for question in round.questions %}
           <td>{{ question.text }}</td>
           <td>{{ question.type }}</td>
+          <td>{{ question.qType }}</td>
           <td>{{ question.answer }}</td>
           {% endfor %}
           <td><i class="ui red trash icon" data-type="round" data-id="{{ round.roundNumber }}"></i></td>
@@ -154,6 +167,54 @@
   </div>
 </div>
 
+<div class="ui aligned grid segment">
+  <h2 class="ui teal dividing header">Consent/Completion Screen Text</h2>
+  <div class="row">
+    <div class="ui column accordion">
+      <div class="title">
+        <i class="dropdown icon"></i>
+         Formatting guide
+      </div>
+      <div class="content">
+        <p>
+        To insert a link, use <pre>&lt;a href="URL GOES HERE"&gt;TEXT TO BE DISPLAYED GOES HERE&lt;/a&gt;</pre>
+        To insert a line break, use <pre>&lt;br /&gt;</pre>
+        </p>
+        <div class="ui divider"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ui row">
+    <form class="ui form column" method="post" action="/admin" enctype="multipart/form-data">
+      <input type="hidden" name="submit" value="text" />
+      <div class="field">
+        <textarea name="endtext" required>{{ endText }}</textarea>
+      </div>
+      <div class="field">
+        <textarea name="consenttext" required>{{ consentText }}</textarea>
+      </div>
+      <button class="ui button">Save</button>
+    </form>
+  </div>
+</div>
+
+<div class="ui aligned grid segment">
+  <h2 class="ui teal dividing header">Admin Account</h2>
+  <div class="ui row">
+    <form class="ui form column" method="post" action="/admin">
+      <input type="hidden" name="submit" value="account" />
+      <div class="two fields">
+        <div class="field">
+          <input type="text" name="username" value="{{ username }}" required />
+        </div>
+        <div class="field">
+          <input type="password" name="password" placeholder="Password" required />
+        </div>
+      </div>
+      <button class="ui button">Save</button>
+    </form>
+  </div>
+</div>
 
 <script>
 $('.ui.accordion').accordion();

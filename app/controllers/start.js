@@ -3,7 +3,8 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Round = mongoose.model('Round'),
   Response = mongoose.model('Response'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  fs = require('fs');
 
 Promise.promisifyAll(mongoose);
 
@@ -30,6 +31,20 @@ router.post('/', function (req, res, next) {
     } else {
       if (response.complete) {
         res.redirect('/complete');
+      } else if (!response.consent) {
+        fs.readFile(__base + 'config/settings.json', function (err, config) {
+          res.render('consent', {
+            consentText: JSON.parse(config).consentText,
+            userId: userId
+          });
+        });
+      } else if (parseInt(response.preAnxiety) === -1) {
+        res.render('anxiety', {
+          title: 'TODO: title',
+          userId: userId,
+          roundNumber: 0,
+          anxietyType: 'preAnxiety'
+        });
       } else {
         Round.findOne({ roundNumber: response.responses.length + 1 }).exec().then(function (round) {
           round.userId = userId;

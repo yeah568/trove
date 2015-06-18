@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var RoundResponseSchema = new Schema({
     roundNumber:  Number,
     questionTypePicked: String,
+    qTypePicked: String,
     questionTime: Number,
     decision:     String,
     decisionTime: Number

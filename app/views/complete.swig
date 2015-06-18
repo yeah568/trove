@@ -12,7 +12,7 @@
       </div>
     </div>
     {% endif %}
-    You may close this window.
+    {% autoescape false %}{{ text }}{% endautoescape %}
   </div>
 </div>
 
