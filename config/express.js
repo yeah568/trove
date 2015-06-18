@@ -43,14 +43,14 @@ module.exports = function(app, config) {
     err.status = 404;
     next(err);
   });
-  
+
   if(app.get('env') === 'development'){
     app.use(function (err, req, res, next) {
       res.status(err.status || 500);
       res.render('error', {
         message: err.message,
         error: err,
-        title: 'error'
+        title: 'Error // Trove'
       });
     });
   }
@@ -60,7 +60,7 @@ module.exports = function(app, config) {
       res.render('error', {
         message: err.message,
         error: {},
-        title: 'error'
+        title: 'Error // Trove'
       });
   });
 

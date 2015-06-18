@@ -14,7 +14,7 @@ module.exports = function (app) {
 
 router.get('/', function (req, res, next) {
   res.render('start', {
-    title: 'Please log in.'
+    title: 'Please log in. // Trove'
   });
 });
 
@@ -25,7 +25,7 @@ router.post('/', function (req, res, next) {
     // if user has not been created
     if (!response) {
       res.render('start', {
-        title: 'Please log in.',
+        title: 'Please log in. // Trove',
         error: 'User ID not found. Please try again.'
       });
     } else {
@@ -34,13 +34,14 @@ router.post('/', function (req, res, next) {
       } else if (!response.consent) {
         fs.readFile(__base + 'config/settings.json', function (err, config) {
           res.render('consent', {
+            title: 'Consent // Trove'
             consentText: JSON.parse(config).consentText,
             userId: userId
           });
         });
       } else if (parseInt(response.preAnxiety) === -1) {
         res.render('anxiety', {
-          title: 'TODO: title',
+          title: 'Anxiety // Trove',
           userId: userId,
           roundNumber: 0,
           anxietyType: 'preAnxiety'
@@ -49,7 +50,7 @@ router.post('/', function (req, res, next) {
         Round.findOne({ roundNumber: response.responses.length + 1 }).exec().then(function (round) {
           round.userId = userId;
           res.render('round', {
-            title: 'TODO: Change this title to something appropriate',
+            title: 'Question // Trove',
             question: round
           });
         });

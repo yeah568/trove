@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
     try {
       var data = JSON.parse(config);
       res.render('complete', {
-        title: 'Complete',
+        title: 'Complete // Trove',
         text: data.endText
       });
     }

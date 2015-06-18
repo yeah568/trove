@@ -157,7 +157,7 @@ router.post('/delete', authMiddleware, function (req, res, next) {
 
 function renderAdmin(req, res) {
   var options = {
-    title: 'Admin'
+    title: 'Admin // Trove'
   }
 
   if (res.locals.renderOptions) {
