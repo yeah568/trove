@@ -34,7 +34,7 @@ router.post('/', function (req, res, next) {
       } else if (!response.consent) {
         fs.readFile(__base + 'config/settings.json', function (err, config) {
           res.render('consent', {
-            title: 'Consent // Trove'
+            title: 'Consent // Trove',
             consentText: JSON.parse(config).consentText,
             userId: userId
           });

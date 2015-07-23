@@ -55,7 +55,7 @@ router.post('/', function (req, res, next) {
 
       if (parseInt(response.preAnxiety) === -1) {
         res.render('anxiety', {
-          title: 'TODO: title',
+          title: 'Anxiety // Trove',
           userId: userId,
           roundNumber: 0,
           anxietyType: 'preAnxiety'
@@ -66,7 +66,7 @@ router.post('/', function (req, res, next) {
       if (completed) {
         if (parseInt(response.postAnxiety) === -1) {
           res.render('anxiety', {
-            title: 'Anxiety',
+            title: 'Anxiety // Trove',
             userId: userId,
             roundNumber: nextRoundNumber,
             anxietyType: 'postAnxiety'
@@ -82,7 +82,7 @@ router.post('/', function (req, res, next) {
       .then(function (round) {
         round.userId = userId;
         res.render('round', {
-          title: 'TODO',
+          title: 'Question // Trove',
           question: round
         });
         return;
