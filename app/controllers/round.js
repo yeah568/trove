@@ -31,6 +31,8 @@ router.post('/', function (req, res, next) {
 
       if (req.body.submitType === 'consent') {
         response.consent = true;
+      } else if (req.body.submitType === 'instructions' ) {
+        response.instructions = true;
       } else if (req.body.submitType === 'preAnxiety') {
         response.preAnxiety = req.body.anxiety;
       } else if (req.body.submitType === 'postAnxiety') {
@@ -52,6 +54,15 @@ router.post('/', function (req, res, next) {
       }
 
       response.save();
+
+      if (response.instructions == false) {
+        res.render('instructions', {
+          title: 'Instructions // Trove',
+          userId: userId,
+          roundNumber: 0
+        });
+        return;
+      }
 
       if (parseInt(response.preAnxiety) === -1) {
         res.render('anxiety', {

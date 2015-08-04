@@ -39,16 +39,12 @@
   <input type="hidden" name="submitType" value="{{ anxietyType }}" />
   <input type="text" name="userId" value="{{ userId }}" />
   <input type="number" name="roundNumber" value="{{ roundNumber }}" />
-  <input type="number" name="anxiety" value="-1" />
+  <input type="number" name="anxiety" value="50" />
 </form>
 
 <script>
 function submitForm() {
-  if (document.forms[0].anxiety.value === -1) {
-    alert('You must choose an option before continuing.');
-  } else {
-    document.forms[0].submit();
-  }
+  document.forms[0].submit();
 }
 
 $('input[type=range]')
