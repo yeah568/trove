@@ -102,6 +102,11 @@ function submit(e) {
   f.questionTypePicked.value = questionTypePicked;
   f.qTypePicked.value = qTypePicked;
 
+  if (questionTypePicked === 'neither' || qTypePicked === 'neither') {
+    alert('You must select a question before proceeding.');
+    return;
+  }
+
   f.decision.value = decision;
   f.decisionTime.value = decisionTime;
   $('.question').off('click').children('.header.title').addClass('disabled');
