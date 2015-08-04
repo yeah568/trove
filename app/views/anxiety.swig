@@ -4,29 +4,22 @@
 <div class="ui center aligned vertically divided grid">
   <div class="ui row">
     <div class="eight wide column">
-      <h1 class="ui header">How anxious are you right now?</h1>
-      1 is least anxious, 5 is most anxious.
+      <h1 class="ui header">
+        {% if anxietyType == "preAnxiety" %}Please rate your anxiety/distress from 0 to 100.
+        {% elseif anxietyType == "postAnxiety" %}Please rate <strong>the highest</strong> anxiety/distress you experienced during this task from 0 to 100.{% endif %}
+      </h1>
+      0 = Totally relaxed
+      <br>
+      50 = Moderate anxiety/distress, uncomfortable but can continue to perform
+      <br>
+      100 = Highest distress/fear/anxiety/discomfort that you have ever felt
     </div>
   </div>
   <div class="eight wide column">
     <div class="ui form">
-      <div class="five fields">
-        <div class="field">
-          <label>1<br><input type="radio" name="anxietyLevel" value="1"/></label>
-        </div>
-        <div class="field">
-          <label>2<br><input type="radio" name="anxietyLevel" value="2"/></label>
-        </div>
-        <div class="field">
-          <label>3<br><input type="radio" name="anxietyLevel" value="3"/></label>
-        </div>
-        <div class="field">
-          <label>4<br><input type="radio" name="anxietyLevel" value="4"/></label>
-        </div>
-        <div class="field">
-          <label>5<br><input type="radio" name="anxietyLevel" value="5"/></label>
-        </div>
-      </div>
+      <div class="field">
+        <input style="width:100%;" type="range" min="0" max="100" value="50" step="1" id="range">
+        <div for="range" id="anxietyvalue">50</div>
     </div>
   </div>
 </div>
@@ -61,9 +54,11 @@ function submitForm() {
     document.forms[0].submit();
   }
 }
-$('input[type=radio][name=anxietyLevel]')
+
+$('input[type=range]')
   .change(function() {
     document.forms[0].anxiety.value = this.value;
+    $('#anxietyvalue').text(this.value);
   });
 
 $('.accept').click(submitForm);
