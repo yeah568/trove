@@ -27,12 +27,8 @@
 
 <div class="ui stackable center aligned grid segment">
   <div class="four wide column"></div>
-  <div class="four wide column">
-    <div class="ui huge green accept button">Accept</div>
-  </div>
-  <div class="ui vertical divider">or</div>
-  <div class="four wide column">
-    <div class="ui huge red decline button">Decline</div>
+  <div class="eight wide column">
+    <div class="ui huge green accept button">Continue</div>
   </div>
   <div class="four wide column"></div>
 </div>
