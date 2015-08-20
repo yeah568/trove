@@ -146,6 +146,7 @@
           <th>Question 2 Q-Type</th>
           <th>Question 2 Answer</th>
           <th>Delete</th>
+          <th>Move</th>
         </tr>
       </thead>
       <tbody>
@@ -160,6 +161,10 @@
           <td>{{ question.answer }}</td>
           {% endfor %}
           <td><i class="ui red trash icon" data-type="round" data-id="{{ round.roundNumber }}"></i></td>
+          <td>
+            <span class="move up" data-id="{{ round.roundNumber }}" data-move="up">Up</span>
+            <span class="move down" data-id="{{ round.roundNumber }}" data-move="down">Down</span>
+          </td>
         </tr>
       {% endfor %}
       </tbody>
@@ -240,6 +245,19 @@ $('.trash').click(function(e) {
     node.parentNode.removeChild(node);
   })
 });
+
+$('.move').click(function(e) {
+  $.post('/admin/move', {
+    direction: e.target.dataset.move,
+    id: e.target.dataset.id
+  }, function(res) {
+    if (res === 'Moved! Refreshing...') {
+      location.reload();
+    } else {
+      alert(res);
+    }
+  });
+})
 </script>
 
 {% endblock %}

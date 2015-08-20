@@ -153,7 +153,42 @@ router.post('/delete', authMiddleware, function (req, res, next) {
       res.send('User ' + req.body.id + ' succesfully deleted.');
     });
   }
-})
+});
+
+router.post('/move', authMiddleware, function (req, res, next) {
+  var num = parseInt(req.body.id);
+  if (req.body.direction == 'up') {
+    Round.find({ roundNumber: num - 1 }).exec()
+    .then(function(rounds) {
+      if (rounds.length > 0) {
+        res.send('Already exists a round ' + (num - 1) + '. Move failed.');
+      } else {
+        Round.findOne({ roundNumber: num }).exec()
+        .then(function(round) {
+          round.roundNumber = num - 1;
+          round.save(function() {
+            res.send('Moved! Refreshing...');
+          });
+        })
+      }
+    });
+  } else if (req.body.direction == 'down') {
+    Round.find({ roundNumber: num + 1 }).exec()
+    .then(function(rounds) {
+      if (rounds.length > 0) {
+        res.send('Already exists a round ' + (num + 1) + '. Move failed.');
+      } else {
+        Round.findOne({ roundNumber: num }).exec()
+        .then(function(round) {
+          round.roundNumber = num + 1;
+          round.save(function() {
+            res.send('Moved! Refreshing...');
+          });
+        })
+      }
+    });
+  }
+});
 
 function renderAdmin(req, res) {
   var options = {
