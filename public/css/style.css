@@ -1,7 +1,8 @@
 body {
   padding: 20px !important;
 }
-.trash {
+.trash,
+.move {
   cursor: pointer; 
   cursor: hand; 
 }
@@ -9,3 +10,4 @@ body {
     visibility: hidden;
     position: absolute;
 }
+
