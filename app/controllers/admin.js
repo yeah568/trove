@@ -95,7 +95,9 @@ router.get('/download', authMiddleware, function (req, res, next) {
   var parsed = [];
   Response.find({}).exec()
   .then(function (responses) {
-    responses.forEach(function (response) {
+    var max = 0;
+    var maxIndex = 0;
+    responses.forEach(function (response, i) {
       // create data objects
       var r = {
         userId: response.userId,
@@ -111,12 +113,17 @@ router.get('/download', authMiddleware, function (req, res, next) {
         r['rr' + rr.roundNumber + 'dt'] = rr.decisionTime;
       })
       parsed.push(r);
+      
+      if (response.responses.length > max) {
+        max = response.responses.length;
+        maxIndex = i;
+      }
     });
 
     // create fields for csv
     var fields = ['userId', 'preAnxiety', 'postAnxiety'];
     var fieldNames = ['User ID', 'Pre Anxiety', 'Post Anxiety'];
-    responses[0].responses.forEach(function (rr, i) {
+    responses[maxIndex].responses.forEach(function (rr, i) {
       fields.push('rr' + rr.roundNumber + 'qtp');
       fields.push('rr' + rr.roundNumber + 'qType');
       fields.push('rr' + rr.roundNumber + 'qt');
