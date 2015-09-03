@@ -1,7 +1,8 @@
 var express = require('express'),
   config = require('./config/config'),
   glob = require('glob'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  nconf = require('nconf');
 
 global.__base = __dirname + '/';
 
@@ -22,4 +23,6 @@ require('./config/express')(app, config);
 
 var port = process.env.PORT || config.port;
 app.listen(port);
+
+nconf.file({ file: 'config/settings.json' });
 

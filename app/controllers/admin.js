@@ -1,3 +1,5 @@
+/*global __base*/
+
 var express = require('express'),
   router = express.Router(),
   mongoose = require('mongoose'),
@@ -7,7 +9,8 @@ var express = require('express'),
   fs = require('fs'),
   auth = require('http-auth'),
   pass = require('pass'),
-  cdm = require('connect-dynamic-middleware');
+  cdm = require('connect-dynamic-middleware'),
+  nconf = require('nconf');
 
 module.exports = function (app) {
   app.use('/admin', router);
@@ -42,7 +45,7 @@ router.post('/', authMiddleware, function (req, res, next) {
         answer: req.body.q2answer
       }]
     });
-    round.save(function (err, res) {
+    round.save(function () {
       next();
     });
   } else if (req.body.submit == 'response') {
@@ -63,11 +66,12 @@ router.post('/', authMiddleware, function (req, res, next) {
       }
     });
   } else if (req.body.submit == 'text') {
-      fs.writeFile(__base + 'config/settings.json',
-      JSON.stringify({ endText: req.body.endtext, consentText: req.body.consenttext }),
-      function (err) {
-        next();
-      });
+    nconf.set('endText', req.body.endtext);
+    nconf.set('consentText', req.body.consenttext);
+    nconf.set('instructionsText', req.body.instructionstext);
+    nconf.save(function () {
+      next();
+    });
   } else if (req.body.submit == 'account') {
     pass.generate(req.body.password, function (err, hash) {
       if (err) {
@@ -77,7 +81,7 @@ router.post('/', authMiddleware, function (req, res, next) {
       var htpasswd = req.body.username + ':' + hash;
       fs.writeFile(__base + 'config/admin.htpasswd',
         htpasswd,
-        function (err) {
+        function () {
           basic = auth.basic({
             realm: 'Admin',
             file: __base + 'config/admin.htpasswd'
@@ -114,6 +118,7 @@ router.get('/download', authMiddleware, function (req, res, next) {
       })
       parsed.push(r);
       
+      // get the max number of rounds any user has completed
       if (response.responses.length > max) {
         max = response.responses.length;
         maxIndex = i;
@@ -191,7 +196,7 @@ router.post('/move', authMiddleware, function (req, res, next) {
           round.save(function() {
             res.send('Moved! Refreshing...');
           });
-        })
+        });
       }
     });
   }
@@ -214,22 +219,15 @@ function renderAdmin(req, res) {
     return Round.find({}).sort({roundNumber:1}).exec()
   }).then(function (rounds) {
     options.rounds = rounds;
-    fs.readFile(__base + 'config/settings.json', function (err, config) {
-      try {
-        var parsed = JSON.parse(config);
-        options.endText = parsed.endText;
-        options.consentText = parsed.consentText;
-        fs.readFile(__base + 'config/admin.htpasswd', "utf-8", function (err, credentials) {
-          if (err) {
-            return console.log(err);
-          };
-          options.username = credentials.split(':')[0];
-          res.render('admin', options);
-        });
-      }
-      catch (err) {
+    options.endText = nconf.get('endText');
+    options.consentText = nconf.get('consentText');
+    options.instructionsText = nconf.get('instructionsText');
+    fs.readFile(__base + 'config/admin.htpasswd', "utf-8", function (err, credentials) {
+      if (err) {
         return console.log(err);
       }
+      options.username = credentials.split(':')[0];
+      res.render('admin', options);
     });
   });
 }

@@ -4,7 +4,7 @@ var express = require('express'),
   Round = mongoose.model('Round'),
   Response = mongoose.model('Response'),
   Promise = require('bluebird'),
-  fs = require('fs');
+  nconf = require('nconf');
 
 Promise.promisifyAll(mongoose);
 
@@ -32,12 +32,10 @@ router.post('/', function (req, res, next) {
       if (response.complete) {
         res.redirect('/complete');
       } else if (!response.consent) {
-        fs.readFile(__base + 'config/settings.json', function (err, config) {
-          res.render('consent', {
-            title: 'Consent // Trove',
-            consentText: JSON.parse(config).consentText,
-            userId: userId
-          });
+        res.render('consent', {
+          title: 'Consent // Trove',
+          consentText: nconf.get('consentText'),
+          userId: userId
         });
       } else if (parseInt(response.preAnxiety) === -1) {
         res.render('anxiety', {

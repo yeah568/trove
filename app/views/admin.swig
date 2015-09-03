@@ -193,10 +193,13 @@
     <form class="ui form column" method="post" action="/admin" enctype="multipart/form-data">
       <input type="hidden" name="submit" value="text" />
       <div class="field">
-        <textarea name="endtext" required>{{ endText }}</textarea>
+        <textarea name="endtext" placeholder="End screen text" required>{{ endText }}</textarea>
       </div>
       <div class="field">
-        <textarea name="consenttext" required>{{ consentText }}</textarea>
+        <textarea name="consenttext" placeholder="Consent screen text" required>{{ consentText }}</textarea>
+      </div>
+      <div class="field">
+        <textarea name="instructionstext" placeholder="Instructions screen text" required>{{ instructionsText }}</textarea>
       </div>
       <button class="ui button">Save</button>
     </form>

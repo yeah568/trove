@@ -3,7 +3,8 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Round = mongoose.model('Round'),
   Response = mongoose.model('Response'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  nconf = require('nconf');
 
 Promise.promisifyAll(mongoose);
 
@@ -59,6 +60,7 @@ router.post('/', function (req, res, next) {
         res.render('instructions', {
           title: 'Instructions // Trove',
           userId: userId,
+          instructionsText: nconf.get('instructionsText'),
           roundNumber: 0
         });
         return;
