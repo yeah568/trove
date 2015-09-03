@@ -10,6 +10,7 @@
       <img src="/img/rounds/{{ question.image }}" />
     </div>
   </div>
+  <br />
   <div class="twelve wide column">
     <div class="ui center aligned grid">
       <div class="six wide column">

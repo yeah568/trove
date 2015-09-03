@@ -3,7 +3,7 @@
 {% block content %}
 <div class="ui center aligned vertically divided grid">
   <div class="eight wide column">
-  {{ consentText }}
+  {% autoescape false %}{{ consentText }}{% endautoescape %}
   </div>
 </div>
 
